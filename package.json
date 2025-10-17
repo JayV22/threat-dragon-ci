@@ -1,0 +1,12 @@
+{
+  "name": "threat-dragon-ci",
+  "version": "0.1.0",
+  "description": "Validation of Threat Dragon models in CI",
+  "license": "MIT",
+  "devDependencies": {
+    "ajv-cli": "^5.0.0"
+  },
+  "scripts": {
+    "validate": "bash ./scripts/validate_models.sh"
+  }
+}

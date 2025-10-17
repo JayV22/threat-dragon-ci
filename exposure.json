@@ -1,0 +1,6 @@
+{
+  "threat-models/sample_model.json": {
+    "score": 10.5,
+    "threat_count": 3
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "Sample App Threat Model",
+  "diagram": {
+    "components": [
+      {
+        "id": "comp1",
+        "type": "process",
+        "name": "Web Server",
+        "threats": [
+          {
+            "title": "SQL Injection",
+            "severity": "High",
+            "mitigation": "Use parameterized queries"
+          },
+          {
+            "title": "Directory Traversal",
+            "severity": "Medium",
+            "mitigation": ""
+          }
+        ]
+      },
+      {
+        "id": "comp2",
+        "type": "data_store",
+        "name": "Database",
+        "threats": [
+          {
+            "title": "Data Exfiltration",
+            "severity": "High",
+            "mitigation": ""
+          }
+        ]
+      }
+    ]
+  }
+}

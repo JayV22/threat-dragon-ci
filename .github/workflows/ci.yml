@@ -1,0 +1,71 @@
+name: Threat Model CI
+
+on:
+  push:
+    paths:
+      - 'threat-models/**'
+      - 'analyzer/**'
+      - 'scripts/**'
+      - '.github/**'
+  pull_request:
+    paths:
+      - 'threat-models/**'
+
+jobs:
+  validate-and-analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code (fetch two commits for diff)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install npm deps
+        run: npm ci
+
+      - name: Validate threat models (schema)
+        run: npm run validate
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+
+      - name: Analyze current exposure
+  id: analyze
+  run: |
+    python analyzer/analyze_risk.py --models threat-models/*.json --output current_exposure.json
+    echo "exposure=$(base64 -w0 current_exposure.json)" >> $GITHUB_OUTPUT
+
+    - name: Post Threat Model Analysis as PR comment
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      env:
+        exposure: ${{ steps.analyze.outputs.exposure }}
+      with:
+        script: |
+          const decoded = Buffer.from(process.env.exposure, 'base64').toString('utf8');
+          const results = JSON.parse(decoded);
+          let summary = '## 🧠 Threat Model Exposure Summary\\n';
+          for (const [file, data] of Object.entries(results)) {
+            summary += `- **${file}** → Score: ${data.score.toFixed(2)}, Threats: ${data.threat_count}\\n`;
+          }
+          summary += '\\n> 🛡️ Automated Threat Model analysis by OWASP Threat Dragon CI';
+          await github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: summary
+          });

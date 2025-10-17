@@ -14,7 +14,7 @@
           },
           {
             "title": "Directory Traversal",
-            "severity": "Medium",
+            "severity": "High",
             "mitigation": ""
           }
         ]

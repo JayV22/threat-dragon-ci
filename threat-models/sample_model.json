@@ -86,5 +86,74 @@
     "reviewer": "Automated OWASP Threat Dragon Analysis",
     "lastUpdated": "2025-10-18T12:00:00Z"
   },
+  "diagram": {
+    "id": "diagram-1",
+    "title": "Web Application Data Flow",
+    "diagramType": "DataFlow",
+    "diagramJson": {
+      "cells": [
+        {
+          "id": "web-server",
+          "type": "tm.Process",
+          "position": { "x": 220, "y": 150 },
+          "size": { "width": 100, "height": 60 },
+          "attrs": { "text": { "text": "Web Server" } }
+        },
+        {
+          "id": "database",
+          "type": "tm.Store",
+          "position": { "x": 480, "y": 150 },
+          "size": { "width": 100, "height": 60 },
+          "attrs": { "text": { "text": "Database" } }
+        },
+        {
+          "id": "dataflow1",
+          "type": "tm.Flow",
+          "source": { "id": "web-server" },
+          "target": { "id": "database" },
+          "labels": [{ "position": 0.5, "attrs": { "text": { "text": "Query Request" } } }]
+        },
+        {
+          "id": "dataflow2",
+          "type": "tm.Flow",
+          "source": { "id": "database" },
+          "target": { "id": "web-server" },
+          "labels": [{ "position": 0.5, "attrs": { "text": { "text": "Response Data" } } }]
+        }
+      ]
+    },
+    "threats": [
+      {
+        "id": "threat-1",
+        "title": "SQL Injection",
+        "severity": "High",
+        "status": "Open",
+        "type": "Tampering",
+        "description": "An attacker may inject SQL commands via user inputs to access or modify database data.",
+        "mitigation": "Use parameterized queries and input validation.",
+        "associatedComponent": "web-server"
+      },
+      {
+        "id": "threat-2",
+        "title": "Directory Traversal",
+        "severity": "High",
+        "status": "Open",
+        "type": "Information Disclosure",
+        "description": "An attacker could exploit improper path sanitization to access restricted files.",
+        "mitigation": "Validate and sanitize file path inputs.",
+        "associatedComponent": "web-server"
+      },
+      {
+        "id": "threat-3",
+        "title": "Data Exfiltration",
+        "severity": "High",
+        "status": "Open",
+        "type": "Information Disclosure",
+        "description": "Sensitive data may be extracted from the database due to lack of encryption or weak access control.",
+        "mitigation": "Use database encryption and enforce strict access controls.",
+        "associatedComponent": "database"
+      }
+    ]
+  },
   "revision": "1.0"
 }
